@@ -1,7 +1,6 @@
 package io.getquill.monad
 
 import io.getquill.MirrorContext
-import io.getquill.Spec
 
 class SyncMonadIOSpec extends IOMonadSpec {
 
