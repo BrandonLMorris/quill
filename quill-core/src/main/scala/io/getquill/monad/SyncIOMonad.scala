@@ -19,13 +19,13 @@ trait SyncIOMonad extends IOMonad {
         }.map(_.result())
       io match {
         case FromTry(v) => v.get
-        case Run(f) => f()
+        case Run(f)     => f()
         case seq @ Sequence(_, _) =>
           loop(flatten(seq))
         case TransformWith(a, fA) =>
           a match {
             case FromTry(v) => loop(fA(v))
-            case Run(r) => loop(fA(Try(r())))
+            case Run(r)     => loop(fA(Try(r())))
             case seq @ Sequence(_, _) =>
               loop(flatten(seq).transformWith(fA))
             case TransformWith(b, fB) =>

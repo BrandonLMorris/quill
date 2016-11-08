@@ -6,6 +6,7 @@ import com.twitter.util.Return
 import scala.util.Success
 import com.twitter.util.Throw
 import scala.util.Failure
+import com.twitter.util.Try
 
 trait TwitterFutureIOMonad extends IOMonad {
   this: Context[_, _] =>
@@ -14,8 +15,8 @@ trait TwitterFutureIOMonad extends IOMonad {
 
   def unsafePerformIO[T](io: IO[T, _]): Result[T] =
     io match {
-      case Unit   => Future.value(())
-      case Run(f) => f()
+      case FromTry(t) => Future.const(Try(t.get))
+      case Run(f)     => f()
       case Sequence(in, cbf) =>
         Future.collect(in.map(unsafePerformIO).toSeq)
           .map(cbf(_).result)
